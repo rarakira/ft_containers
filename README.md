@@ -17,3 +17,11 @@ Reimplementaion of C++98 STL containers. Subject can be found [here](https://cdn
 2. Map
 3. Stack adaptor based on Vector (1) implementation
 4. Set (based on Red-Black Tree)
+
+### Technical requirements
+
+* The coding language is C++98.
+* The namespaces will be ft and all containers will be tested using ft::<container>.
+* You cannot implement more public functions than the ones offered in the standard containers. Everything else must be private or protected. Each public function variable must be justified.
+* You must use std::allocator
+* For non-member overloads, the keyword friend is allowed.
