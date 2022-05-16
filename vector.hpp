@@ -108,11 +108,7 @@ namespace ft
 	template< class T, class Allocator >
 	void swap( vector<T,Allocator>& lhs, vector<T,Allocator>& rhs );
 
-
-} // namespace ft
-
-namespace ft
-{
+	/* Functions implementations */
 
 	template<class T, class Allocator>
 	vector<T, Allocator>::vector() : _size(0), _capacity(0), _alloc() {
