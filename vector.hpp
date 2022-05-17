@@ -241,7 +241,10 @@ namespace ft
 
 	/* Capacity functions implementation */
 
-	// bool empty() const;
+	template<class T, class Allocator>
+	bool vector<T, Allocator>::empty() const {
+		return (_size == 0);
+	}
 
 	template<class T, class Allocator>
 	typename vector<T, Allocator>::size_type vector<T, Allocator>::size() const {
@@ -290,7 +293,11 @@ namespace ft
 	template<class T, class Allocator>
 	void vector<T, Allocator>::push_back(const T& value) {
 		if (_capacity == _size) {
-			reserve(2 * _size);
+			if (_capacity == 0) {
+				reserve(1);
+			} else {
+				reserve(2 * _size);
+			}
 		}
 		_alloc.construct(_array + _size, value);
 		++_size;

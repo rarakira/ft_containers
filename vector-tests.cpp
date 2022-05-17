@@ -31,5 +31,24 @@ int main(int argc, char const *argv[])
 	catch(const std::exception& e) {
 		std::cerr << e.what() << '\n';
 	}
+
+	std::vector<int> vv;
+	ft::vector<int> ft_vv;
+	std::cout << vv.empty() << '\n';
+	std::cout << ft_vv.empty() << '\n';
+
+	vv.push_back(1);
+	vv.push_back(2);
+	vv.push_back(3);
+	std::cout << vv.size() << "\t" << vv.capacity() << std::endl;
+
+	ft_vv.push_back(1);
+	ft_vv.push_back(2);
+	ft_vv.push_back(3);
+	std::cout << ft_vv.size() << "\t" << ft_vv.capacity() << std::endl;
+
+	std::cout << vv.empty() << '\n';
+	std::cout << ft_vv.empty() << '\n';
+
 	return 0;
 }
