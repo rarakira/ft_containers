@@ -260,7 +260,7 @@ namespace ft
 		size_type i = 0;
 		try {
 			for (; i < _size; ++i) {
-				_alloc.construct(_array + i, _array[i]);
+				_alloc.construct(newarr + i, _array[i]);
 			}
 		} catch (...) {
 			for (size_type j = 0; j < i; ++j) {
