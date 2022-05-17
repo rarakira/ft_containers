@@ -2,6 +2,7 @@
 # define FT_VECTOR_HPP
 
 # include <memory>
+#include <iostream>
 
 namespace ft
 {
@@ -149,7 +150,7 @@ namespace ft
 	
 	template<class T, class Allocator>
 	vector<T, Allocator>::vector(const vector& other) {
-		
+
 	}
 
 	/* Destructor */
@@ -225,6 +226,7 @@ namespace ft
 	}
 
 	/* Iterators functions implementation */
+
 	// iterator begin();
 	// const_iterator begin() const;
 
@@ -251,23 +253,23 @@ namespace ft
 	template<class T, class Allocator>
 	void vector<T, Allocator>::reserve(size_type new_cap) {
 		if (new_cap <= _capacity) return;
-		T* newarr = reinterpret_cast<T*>(new int8_t[new_cap * sizeof(T)]);
+		T* newarr = _alloc.allocate(new_cap);
 		size_type i = 0;
 		try {
 			for (; i < _size; ++i) {
-				new(newarr + i) T(_array[i]);
+				_alloc.construct(_array + i, _array[i]);
 			}
 		} catch (...) {
 			for (size_type j = 0; j < i; ++j) {
-				(_array + j)->~T();
+				_alloc.destroy(&_array[j]);
 			}
 			delete[] reinterpret_cast<int8_t*>(newarr);
 			throw;
 		}
 		for (size_type i = 0; i < _size; ++i) {
-			(_array + i)->~T();
+			_alloc.destroy(&_array[i]);
 		}
-		delete[] reinterpret_cast<int8_t*>(_array);
+		_alloc.deallocate(_array, _capacity);
 		_array = newarr;
 		_capacity = new_cap;
 	}
@@ -290,21 +292,21 @@ namespace ft
 		if (_capacity == _size) {
 			reserve(2 * _size);
 		}
-		new(_array + _size) T(value);
+		_alloc.construct(_array + _size, value);
 		++_size;
 	}
 
 	template<class T, class Allocator>
 	void vector<T, Allocator>::pop_back() {
 		--_size;
-		(_array + _size)->~T();
+		_alloc.destroy(&_array[_size]);
 	}
 
 	template<class T, class Allocator>
 	void vector<T, Allocator>::resize(size_type count, T value) {
 		if (count > _capacity) reserve(count);
 		for (size_type i = _size; i < count; ++i) {
-			new(_array + i) T(value);
+			_alloc.construct(_array + _size, value);
 		}
 		if (count < _size) {
 			_size = count;
