@@ -38,7 +38,7 @@ namespace ft
 		explicit vector( size_type count, const T& value = T(), const Allocator& alloc = Allocator());
 		// template< class InputIt >
 		// vector( InputIt first, InputIt last, const Allocator& alloc = Allocator() );
-		// vector( const vector& other );
+		vector( const vector& other );
 		~vector();
 		vector& operator=( const vector& other );
 		void assign( size_type count, const T& value );
@@ -113,7 +113,7 @@ namespace ft
 	template< class T, class Allocator >
 	void swap( vector<T,Allocator>& lhs, vector<T,Allocator>& rhs );
 
-	/* Constructors and destructor */
+	/* Constructors */
 
 	template<class T, class Allocator>
 	vector<T, Allocator>::vector() : _size(0), _capacity(0), _alloc() {
@@ -146,7 +146,13 @@ namespace ft
 	}
 	// template< class InputIt >
 	// vector( InputIt first, InputIt last, const Allocator& alloc = Allocator() );
-	// vector( const vector& other );
+	
+	template<class T, class Allocator>
+	vector<T, Allocator>::vector(const vector& other) {
+		
+	}
+
+	/* Destructor */
 
 	template<class T, class Allocator>
 	vector<T, Allocator>::~vector() {
@@ -156,20 +162,92 @@ namespace ft
 		_alloc.deallocate(_array, _capacity);
 	}
 
-	/* Capacity function implementation */
+	// vector& operator=( const vector& other );
+	// void assign( size_type count, const T& value );
+	// allocator_type get_allocator() const;
+
+	/* Element access functions implementation */
+
+	template<class T, class Allocator>
+	typename vector<T, Allocator>::reference vector<T, Allocator>::at(size_type pos) {
+		if (pos >= _size) {
+			throw std::out_of_range("vector");
+		}
+		return _array[pos];
+	}
+
+	template<class T, class Allocator>
+	typename vector<T, Allocator>::const_reference vector<T, Allocator>::at(size_type pos) const {
+		if (pos >= _size) {
+			throw std::out_of_range("vector");
+		}
+		return _array[pos];
+	}
+
+	template<class T, class Allocator>
+	typename vector<T, Allocator>::reference vector<T, Allocator>::operator[](size_type pos) {
+		return _array[pos];
+	}
+
+	template<class T, class Allocator>
+	typename vector<T, Allocator>::const_reference vector<T, Allocator>::operator[](size_type pos) const {
+		return _array[pos];
+	}
+
+	template<class T, class Allocator>
+	typename vector<T, Allocator>::reference vector<T, Allocator>::front() {
+		return _array[0];
+	}
+
+	template<class T, class Allocator>
+	typename vector<T, Allocator>::const_reference vector<T, Allocator>::front() const {
+		return _array[0];
+	}
+
+	template<class T, class Allocator>
+	typename vector<T, Allocator>::reference vector<T, Allocator>::back() {
+		return _array[_size - 1];
+	}
+
+	template<class T, class Allocator>
+	typename vector<T, Allocator>::const_reference vector<T, Allocator>::back() const {
+		return _array[_size - 1];
+	}
+
+	template<class T, class Allocator>
+	T* vector<T, Allocator>::data() {
+		return _array;
+	}
+
+	template<class T, class Allocator>
+	const T* vector<T, Allocator>::data() const {
+		return _array;
+	}
+
+	/* Iterators functions implementation */
+	// iterator begin();
+	// const_iterator begin() const;
+
+	// iterator end();
+	// const_iterator end() const;
+
+	// reverse_iterator rbegin();
+	// const_reverse_iterator rbegin() const;
+
+	// reverse_iterator rend();
+	// const_reverse_iterator rend() const;
+
+	/* Capacity functions implementation */
+
+	// bool empty() const;
 
 	template<class T, class Allocator>
 	typename vector<T, Allocator>::size_type vector<T, Allocator>::size() const {
 		return _size;
 	}
+
+	// size_type max_size() const;
 	
-	template<class T, class Allocator>
-	typename vector<T, Allocator>::size_type vector<T, Allocator>::capacity() const {
-		return _capacity;
-	}
-
-	/* Functions implementations */
-
 	template<class T, class Allocator>
 	void vector<T, Allocator>::reserve(size_type new_cap) {
 		if (new_cap <= _capacity) return;
@@ -194,16 +272,18 @@ namespace ft
 		_capacity = new_cap;
 	}
 
+	
 	template<class T, class Allocator>
-	void vector<T, Allocator>::resize(size_type count, T value) {
-		if (count > _capacity) reserve(count);
-		for (size_type i = _size; i < count; ++i) {
-			new(_array + i) T(value);
-		}
-		if (count < _size) {
-			_size = count;
-		}
+	typename vector<T, Allocator>::size_type vector<T, Allocator>::capacity() const {
+		return _capacity;
 	}
+
+	/* Modifiers functions implementations */
+
+	// void clear();
+	// iterator insert( iterator pos, const T& value );
+	// iterator erase( iterator pos );
+	// iterator erase( iterator first, iterator last );
 
 	template<class T, class Allocator>
 	void vector<T, Allocator>::push_back(const T& value) {
@@ -221,15 +301,17 @@ namespace ft
 	}
 
 	template<class T, class Allocator>
-	typename vector<T, Allocator>::reference vector<T, Allocator>::operator[]( size_type pos ) {
-		return _array[pos];
+	void vector<T, Allocator>::resize(size_type count, T value) {
+		if (count > _capacity) reserve(count);
+		for (size_type i = _size; i < count; ++i) {
+			new(_array + i) T(value);
+		}
+		if (count < _size) {
+			_size = count;
+		}
 	}
 
-	template<class T, class Allocator>
-	typename vector<T, Allocator>::const_reference vector<T, Allocator>::operator[]( size_type pos ) const {
-		return _array[pos];
-	}
-
+	// void swap( vector& other );
 
 } // namespace ft
 
