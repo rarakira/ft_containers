@@ -263,7 +263,7 @@ namespace ft
 			for (size_type j = 0; j < i; ++j) {
 				_alloc.destroy(&_array[j]);
 			}
-			delete[] reinterpret_cast<int8_t*>(newarr);
+			_alloc.deallocate(newarr, new_cap);
 			throw;
 		}
 		for (size_type i = 0; i < _size; ++i) {
