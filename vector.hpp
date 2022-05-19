@@ -2,10 +2,13 @@
 # define FT_VECTOR_HPP
 
 # include <memory>
-#include <iostream>
+# include <iostream>
 
-namespace ft
-{
+# include "RandomAccessIterator.hpp"
+# include "ReverseIterator.hpp"
+
+namespace ft {
+
 	template<typename T, typename Allocator = std::allocator<T> >
 	class vector {
 	public:
@@ -18,14 +21,12 @@ namespace ft
 		typedef typename Allocator::pointer				pointer;
 		typedef typename Allocator::const_pointer		const_pointer;
 
-		// iterator
-		// LegacyRandomAccessIterator and LegacyContiguousIterator to value_type
-
-		// const_iterator
-		// LegacyRandomAccessIterator and LegacyContiguousIterator to const value_type
-
-		// reverse_iterator	std::reverse_iterator<iterator>
-		// const_reverse_iterator std::reverse_iterator<const_iterator>
+		typedef random_access_iterator<T>		 				iterator;
+		typedef random_access_iterator<const T>					const_iterator;
+		// typedef reverse_iterator<iterator>						reverse_iterator;
+		// typedef reverse_iterator<const_iterator>				const_reverse_iterator;
+		typedef	ft::reverse_iterator<iterator>				reverse_iterator;
+		typedef	ft::reverse_iterator<const_iterator>		const_reverse_iterator;
 
 	private:
 		size_type               _size;
@@ -62,17 +63,17 @@ namespace ft
 		const T* data() const;
 
 		/* Iterators */
-		// iterator begin();
-		// const_iterator begin() const;
+		iterator begin();
+		const_iterator begin() const;
 
-		// iterator end();
-		// const_iterator end() const;
+		iterator end();
+		const_iterator end() const;
 
-		// reverse_iterator rbegin();
-		// const_reverse_iterator rbegin() const;
+		reverse_iterator rbegin();
+		const_reverse_iterator rbegin() const;
 
-		// reverse_iterator rend();
-		// const_reverse_iterator rend() const;
+		reverse_iterator rend();
+		const_reverse_iterator rend() const;
 		
 		/* Capacity */
 		bool empty() const;
@@ -149,8 +150,22 @@ namespace ft
 	// vector( InputIt first, InputIt last, const Allocator& alloc = Allocator() );
 	
 	template<class T, class Allocator>
-	vector<T, Allocator>::vector(const vector& other) {
-
+	vector<T, Allocator>::vector(const vector& other) :
+		_size(other._size), _capacity(other._capacity), _alloc(other._alloc) {
+		_array = _alloc.allocate(_capacity);
+		size_type i = 0;
+		try {
+			for (; i < _size; ++i) {
+				_alloc.construct(_array + i, other._array[i]);
+			}
+		}
+		catch (...) {
+			for (; i > 0; --i) {
+				_alloc.destroy(_array + i - 1);
+			}
+			_alloc.deallocate(_array, _capacity);
+			throw ;
+		}
 	}
 
 	/* Destructor */
@@ -163,7 +178,30 @@ namespace ft
 		_alloc.deallocate(_array, _capacity);
 	}
 
-	// vector& operator=( const vector& other );
+	template<class T, class Allocator>
+	vector<T, Allocator>& vector<T, Allocator>::operator=(const vector& other)
+	{
+		T* tmp = _alloc.allocate(other._capacity);
+		size_type i;
+		try
+		{
+			for ( i = 0; i < other._size; ++i)
+				_alloc.construct(tmp + i, other._array[i]);
+		}
+		catch (...)
+		{
+			for (; i > 0; --i)
+				_alloc.destroy(tmp + i - 1);
+			_alloc.deallocate(tmp, _capacity);
+			throw ;
+		}
+		this->~vector();
+		_capacity = other._capacity;
+		_size = other._size;
+		_array = tmp;
+		return *this;
+	}
+
 	// void assign( size_type count, const T& value );
 	// allocator_type get_allocator() const;
 
@@ -227,17 +265,45 @@ namespace ft
 
 	/* Iterators functions implementation */
 
-	// iterator begin();
-	// const_iterator begin() const;
+	template<class T, class Allocator>
+	typename vector<T, Allocator>::iterator vector<T, Allocator>::begin() {
+		return iterator(&_array[0]);
+	}
 
-	// iterator end();
-	// const_iterator end() const;
+	template<class T, class Allocator>
+	typename vector<T, Allocator>::const_iterator vector<T, Allocator>::begin() const {
+		return const_iterator(&_array[0]);
+	}
 
-	// reverse_iterator rbegin();
-	// const_reverse_iterator rbegin() const;
+	template<class T, class Allocator>
+	typename vector<T, Allocator>::iterator vector<T, Allocator>::end() {
+		return iterator(&_array[_size]);
+	}
 
-	// reverse_iterator rend();
-	// const_reverse_iterator rend() const;
+	template<class T, class Allocator>
+	typename vector<T, Allocator>::const_iterator vector<T, Allocator>::end() const {
+		return const_iterator(&_array[_size]);
+	}
+
+	template<class T, class Allocator>
+	typename vector<T, Allocator>::reverse_iterator vector<T, Allocator>::rbegin() {
+		return reverse_iterator(end());
+	}
+
+	template<class T, class Allocator>
+	typename vector<T, Allocator>::const_reverse_iterator vector<T, Allocator>::rbegin() const {
+		return const_reverse_iterator(end());
+	}
+
+	template<class T, class Allocator>
+	typename vector<T, Allocator>::reverse_iterator vector<T, Allocator>::rend() {
+		return reverse_iterator(begin());
+	}
+
+	template<class T, class Allocator>
+	typename vector<T, Allocator>::const_reverse_iterator vector<T, Allocator>::rend() const {
+		return const_reverse_iterator(begin());
+	}
 
 	/* Capacity functions implementation */
 

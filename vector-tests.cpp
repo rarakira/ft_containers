@@ -50,5 +50,18 @@ int main(int argc, char const *argv[])
 	std::cout << vv.empty() << '\n';
 	std::cout << ft_vv.empty() << '\n';
 
+	ft::vector<int> ft_new;
+
+	std::cout << ft_new.empty() << '\n';
+	ft_new = ft_vv;
+	std::cout << ft_new.empty() << '\n';
+
+	ft::vector<int>::iterator it = ft_new.begin();
+
+	for (size_t i = 0; i < ft_new.size(); i++) {
+		std::cout << "Iterator value: " << *it << std::endl;
+		it++;
+	}
+
 	return 0;
 }

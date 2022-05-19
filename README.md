@@ -25,3 +25,7 @@ Reimplementaion of C++98 STL containers. Subject can be found [here](https://cdn
 * You cannot implement more public functions than the ones offered in the standard containers. Everything else must be private or protected. Each public function variable must be justified.
 * You must use std::allocator
 * For non-member overloads, the keyword friend is allowed.
+
+## Useful links
+
+* Good presentation on [iterators](https://home.csulb.edu/~pnguyen/cecs282/lecnotes/iterators.pdf)
